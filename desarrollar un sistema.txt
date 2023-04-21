@@ -1,0 +1,510 @@
+desarrollar un sistema que calcule el producto de dos matrices rectangulares utilizando Java RMI con los nombres de los archivos INterface, PClass, RMIClient y RMIServer sea la matriz A con dimensiones NxM, y la matriz B con dimensiones MxN.
+
+Sea C = AxB.
+
+Se deberán ejecutar dos casos:
+
+    N=9, M=4 se deberá desplegar la matriz  C y el checksum de la matriz C.
+    N=900, M=400 se deberá desplegar el checksum de la matriz C.
+
+Los elementos de las matrices A, B y C deberán ser de tipo float y el checksum deberá ser de tipo double.
+
+Se deberá inicializar las matrices A y B de la siguiente manera:
+
+A[i][j]= 2 * i + 3 * j
+B[i][j] = 3 * i - 2 * j
+
+Sea BT la transpuesta de la matriz B.
+
+Para desarrollar este sistema que calcule el producto de dos matrices rectangulares utilizando Java RMI, se deben seguir los siguientes pasos:
+
+    Crear la interfaz remota RMI: En el archivo "Interface.java" se debe definir la interfaz remota con el método remoto "multiplyMatrix" que recibe dos matrices de tipo float y devuelve la matriz resultante de la multiplicación.
+
+    Crear la implementación del objeto remoto RMI: En el archivo "PClass.java" se debe implementar la interfaz remota definida en el paso anterior. Se debe implementar el método "multiplyMatrix" que realiza la multiplicación de las dos matrices y devuelve la matriz resultante.
+
+    Crear el servidor RMI: En el archivo "RMIServer.java" se debe crear el servidor RMI que instancia el objeto remoto y lo registra en el registro RMI.
+
+    Crear el cliente RMI: En el archivo "RMIClient.java" se debe crear el cliente RMI que busca el objeto remoto en el registro RMI y llama al método "multiplyMatrix" para realizar la multiplicación de las dos matrices.
+
+Para inicializar las matrices A y B, se pueden crear dos métodos en la clase PClass que las inicialicen y devuelvan.
+
+Para calcular el checksum de la matriz, se puede recorrer la matriz resultante y sumar todos sus elementos. El resultado se convierte a double y se devuelve como el checksum.
+
+Para ejecutar los dos casos se debe:
+
+    Crear las matrices A y B con las dimensiones correspondientes y los valores iniciales.
+
+    Crear el objeto remoto y registrarlo en el registro RMI.
+
+    Ejecutar el cliente RMI para llamar al método "multiplyMatrix" y obtener la matriz resultante.
+
+    Si es necesario, recorrer la matriz resultante para calcular el checksum y mostrarlo en pantalla.
+
+A continuación se muestra un ejemplo de implementación de los archivos mencionados:
+
+Interface.java:
+
+java
+
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+
+public interface Interface extends Remote {
+    public float[][] multiplyMatrix(float[][] A, float[][] B) throws RemoteException;
+}
+
+PClass.java:
+
+css
+
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+
+public class PClass extends UnicastRemoteObject implements Interface {
+    private static final long serialVersionUID = 1L;
+    private float[][] A;
+    private float[][] B;
+
+    protected PClass() throws RemoteException {
+        super();
+    }
+
+    public float[][] getMatrixA(int N, int M) {
+        A = new float[N][M];
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < M; j++) {
+                A[i][j] = 2 * i + 3 * j;
+            }
+        }
+        return A;
+    }
+
+    public float[][] getMatrixB(int M, int N) {
+        B = new float[M][N];
+        for (int i = 0; i < M; i++) {
+            for (int j = 0; j < N; j++) {
+                B[i][j] = 3 * i - 2 * j;
+            }
+        }
+        return B;
+    }
+
+    @Override
+    public float[][] multiplyMatrix(float[][] A, float[][] B) throws RemoteException {
+        int N = A.length;
+        int M = B.length;
+        int K = B[0].length;
+        float[][] BT = new float[K][M];
+        for (int i = 0; i < K
+
+Jesus Octavio Alvarez Carmona
+continua con el codigo import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+
+public class PClass extends UnicastRemoteObject implements Interface {
+    private static final long serialVersionUID = 1L;
+    private float[][] A;
+    private float[][] B;
+
+    protected PClass() throws RemoteException {
+        super();
+    }
+
+    public float[][] getMatrixA(int N, int M) {
+        A = new float[N][M];
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < M; j++) {
+                A[i][j] = 2 * i + 3 * j;
+            }
+        }
+        return A;
+    }
+
+    public float[][] getMatrixB(int M, int N) {
+        B = new float[M][N];
+        for (int i = 0; i < M; i++) {
+            for (int j = 0; j < N; j++) {
+                B[i][j] = 3 * i - 2 * j;
+            }
+        }
+        return B;
+    }
+
+    @Override
+    public float[][] multiplyMatrix(float[][] A, float[][] B) throws RemoteException {
+        int N = A.length;
+        int M = B.length;
+        int K = B[0].length;
+        float[][] BT = new float[K][M];
+        for (int i = 0; i < K
+2 / 2
+
+The code seems to have been cut off, but based on the last line shown, I can infer that there is a missing closing brace for the for loop. Here is the corrected code:
+
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+
+public class PClass extends UnicastRemoteObject implements Interface {
+private static final long serialVersionUID = 1L;
+private float[][] A;
+private float[][] B;
+
+css
+
+protected PClass() throws RemoteException {
+    super();
+}
+
+public float[][] getMatrixA(int N, int M) {
+    A = new float[N][M];
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < M; j++) {
+            A[i][j] = 2 * i + 3 * j;
+        }
+    }
+    return A;
+}
+
+public float[][] getMatrixB(int M, int N) {
+    B = new float[M][N];
+    for (int i = 0; i < M; i++) {
+        for (int j = 0; j < N; j++) {
+            B[i][j] = 3 * i - 2 * j;
+        }
+    }
+    return B;
+}
+
+@Override
+public float[][] multiplyMatrix(float[][] A, float[][] B) throws RemoteException {
+    int N = A.length;
+    int M = B.length;
+    int K = B[0].length;
+    float[][] BT = new float[K][M];
+    for (int i = 0; i < K; i++) {
+        for (int j = 0; j < M; j++) {
+            BT[i][j] = B[j][i];
+        }
+    }
+    float[][] C = new float[N][K];
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < K; j++) {
+            float sum = 0;
+            for (int k = 0; k < M; k++) {
+                sum += A[i][k] * BT[j][k];
+            }
+            C[i][j] = sum;
+        }
+    }
+    return C;
+}
+
+}
+
+Note that I have added the missing brace to close the for loop that initializes the transpose of matrix B.
+Jesus Octavio Alvarez Carmona
+y para el RMIServer y el RMIClient
+
+Sure, here's an implementation of the RMIServer and RMIClient classes for the matrix multiplication program using Java RMI:
+
+RMIServer.java:
+
+java
+
+import java.rmi.Naming;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
+
+public class RMIServer extends UnicastRemoteObject implements RMIServerInterface {
+    private static final long serialVersionUID = 1L;
+    private static final String HOST = "localhost";
+    private static final int PORT = 1099;
+    private static final String SERVICE_NAME = "MatrixMultiplicationService";
+    
+    protected RMIServer() throws RemoteException {
+        super();
+    }
+    
+    public static void main(String[] args) {
+        try {
+            Registry registry = LocateRegistry.createRegistry(PORT);
+            RMIServer server = new RMIServer();
+            String url = String.format("rmi://%s:%d/%s", HOST, PORT, SERVICE_NAME);
+            Naming.rebind(url, server);
+            System.out.println("Server ready.");
+        } catch (Exception e) {
+            System.err.println("Server exception: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public float[][] multiplyMatrix(float[][] A, float[][] B) throws RemoteException {
+        return new PClass().multiplyMatrix(A, B);
+    }
+
+    @Override
+    public float[][] getMatrixA(int N, int M) throws RemoteException {
+        return new PClass().getMatrixA(N, M);
+    }
+
+    @Override
+    public float[][] getMatrixB(int M, int N) throws RemoteException {
+        return new PClass().getMatrixB(M, N);
+    }
+}
+
+RMIClient.java:
+
+java
+
+import java.rmi.Naming;
+import java.rmi.RemoteException;
+
+public class RMIClient {
+    private static final String HOST = "localhost";
+    private static final int PORT = 1099;
+    private static final String SERVICE_NAME = "MatrixMultiplicationService";
+
+    public static void main(String[] args) {
+        try {
+            RMIServerInterface server = (RMIServerInterface) Naming.lookup(String.format("rmi://%s:%d/%s", HOST, PORT, SERVICE_NAME));
+            
+            // Case 1: N=9, M=4
+            int N = 9;
+            int M = 4;
+            float[][] A = server.getMatrixA(N, M);
+            float[][] B = server.getMatrixB(M, N);
+            float[][] C = server.multiplyMatrix(A, B);
+            System.out.println("Matrix C:");
+            printMatrix(C);
+            System.out.println("Checksum of C: " + calculateChecksum(C));
+            System.out.println();
+            
+            // Case 2: N=900, M=400
+            N = 900;
+            M = 400;
+            A = server.getMatrixA(N, M);
+            B = server.getMatrixB(M, N);
+            C = server.multiplyMatrix(A, B);
+            System.out.println("Checksum of C: " + calculateChecksum(C));
+        } catch (Exception e) {
+            System.err.println("Client exception: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    private static double calculateChecksum(float[][] matrix) {
+        double checksum = 0;
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                checksum += matrix[i][j];
+            }
+        }
+        return checksum;
+    }
+    
+    private static void printMatrix(float[][] matrix) {
+        for (int i = 0; i < matrix
+
+Jesus Octavio Alvarez Carmona
+continua con el codigo import java.rmi.Naming;
+import java.rmi.RemoteException;
+
+public class RMIClient {
+    private static final String HOST = "localhost";
+    private static final int PORT = 1099;
+    private static final String SERVICE_NAME = "MatrixMultiplicationService";
+
+    public static void main(String[] args) {
+        try {
+            RMIServerInterface server = (RMIServerInterface) Naming.lookup(String.format("rmi://%s:%d/%s", HOST, PORT, SERVICE_NAME));
+            
+            // Case 1: N=9, M=4
+            int N = 9;
+            int M = 4;
+            float[][] A = server.getMatrixA(N, M);
+            float[][] B = server.getMatrixB(M, N);
+            float[][] C = server.multiplyMatrix(A, B);
+            System.out.println("Matrix C:");
+            printMatrix(C);
+            System.out.println("Checksum of C: " + calculateChecksum(C));
+            System.out.println();
+            
+            // Case 2: N=900, M=400
+            N = 900;
+            M = 400;
+            A = server.getMatrixA(N, M);
+            B = server.getMatrixB(M, N);
+            C = server.multiplyMatrix(A, B);
+            System.out.println("Checksum of C: " + calculateChecksum(C));
+        } catch (Exception e) {
+            System.err.println("Client exception: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    private static double calculateChecksum(float[][] matrix) {
+        double checksum = 0;
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                checksum += matrix[i][j];
+            }
+        }
+        return checksum;
+    }
+    
+    private static void printMatrix(float[][] matrix) {
+        for (int i = 0; i < matrix
+
+Continuing with the code:
+
+csharp
+
+            private static void printMatrix(float[][] matrix) {
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                System.out.print(matrix[i][j] + " ");
+            }
+            System.out.println();
+        }
+    }
+}
+
+This is the implementation of the RMIClient class. The class connects to the RMIServer using the RMI registry and invokes its methods to get the matrices and their multiplication result. It also prints the matrices and the checksum as required.
+
+The calculateChecksum() method calculates the checksum of the matrix by adding up all its elements. The printMatrix() method prints a matrix to the console.
+Jesus Octavio Alvarez Carmona
+cual es el RMIServerInterface
+
+El RMIServerInterface es una interfaz remota que define los métodos que el servidor RMI proporciona a sus clientes remotos. En este caso, la interfaz define los métodos getMatrixA(), getMatrixB(), y multiplyMatrix().
+
+Aquí está la definición de la interfaz RMIServerInterface:
+
+java
+
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+
+public interface RMIServerInterface extends Remote {
+    float[][] getMatrixA(int N, int M) throws RemoteException;
+    float[][] getMatrixB(int M, int N) throws RemoteException;
+    float[][] multiplyMatrix(float[][] A, float[][] B) throws RemoteException;
+}
+
+La interfaz RMIServerInterface extiende la interfaz Remote para indicar que los objetos que la implementan se pueden llamar de forma remota. Cada uno de los métodos en la interfaz puede arrojar una excepción de RemoteException, lo que indica que puede haber problemas de comunicación entre el cliente y el servidor.
+
+agrega un if en esto para seleccionar que caso escogera el usuario public static void main(String[] args) {
+        try {
+            Interface server = (Interface) Naming.lookup(String.format("rmi://%s:%d/%s", HOST, PORT, SERVICE_NAME));
+            
+            // Case 1: N=9, M=4
+            int N = 9;
+            int M = 4;
+            float[][] A = server.getMatrixA(N, M);
+            float[][] B = server.getMatrixB(M, N);
+            float[][] C = server.multiplyMatrix(A, B);
+            System.out.println("Matrix C:");
+            printMatrix(C);
+            System.out.println("Checksum of C: " + calculateChecksum(C));
+            System.out.println();
+            
+            // Case 2: N=900, M=400
+            N = 900;
+            M = 400;
+            A = server.getMatrixA(N, M);
+            B = server.getMatrixB(M, N);
+            C = server.multiplyMatrix(A, B);
+            System.out.println("Checksum of C: " + calculateChecksum(C));
+        } catch (Exception e) {
+            System.err.println("Client exception: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+Claro, podrías agregar un if para que el usuario seleccione qué caso desea ejecutar. Por ejemplo, podrías preguntar al usuario qué caso desea ejecutar y en base a su respuesta, establecer los valores de N y M. Aquí te dejo un ejemplo:
+
+java
+
+import java.rmi.Naming;
+
+public class RMIClient {
+    private static final String HOST = "localhost";
+    private static final int PORT = 1099;
+    private static final String SERVICE_NAME = "MatrixMultiplicationService";
+
+    public static void main(String[] args) {
+        try {
+            Interface server = (Interface) Naming.lookup(String.format("rmi://%s:%d/%s", HOST, PORT, SERVICE_NAME));
+            
+            int option = 0;
+            Scanner scanner = new Scanner(System.in);
+            
+            do {
+                System.out.println("Choose an option:");
+                System.out.println("1. Case 1 (N=9, M=4)");
+                System.out.println("2. Case 2 (N=900, M=400)");
+                System.out.println("0. Exit");
+                System.out.print("> ");
+                
+                option = scanner.nextInt();
+                
+                switch (option) {
+                    case 1:
+                        int N = 9;
+                        int M = 4;
+                        float[][] A = server.getMatrixA(N, M);
+                        float[][] B = server.getMatrixB(M, N);
+                        float[][] C = server.multiplyMatrix(A, B);
+                        System.out.println("Matrix C:");
+                        printMatrix(C);
+                        System.out.println("Checksum of C: " + calculateChecksum(C));
+                        System.out.println();
+                        break;
+                    case 2:
+                        N = 900;
+                        M = 400;
+                        A = server.getMatrixA(N, M);
+                        B = server.getMatrixB(M, N);
+                        C = server.multiplyMatrix(A, B);
+                        System.out.println("Checksum of C: " + calculateChecksum(C));
+                        break;
+                    case 0:
+                        break;
+                    default:
+                        System.out.println("Invalid option");
+                        break;
+                }
+                
+            } while (option != 0);
+            
+        } catch (Exception e) {
+            System.err.println("Client exception: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    private static double calculateChecksum(float[][] matrix) {
+        double checksum = 0;
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                checksum += matrix[i][j];
+            }
+        }
+        return checksum;
+    }
+    
+    private static void printMatrix(float[][] matrix) {
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                System.out.print(matrix[i][j] + " ");
+            }
+            System.out.println();
+        }
+    }
+}
+
+En este ejemplo, se agrega un ciclo do-while que se ejecuta hasta que el usuario seleccione la opción 0 para salir. Dentro de este ciclo, se muestra al usuario un menú de opciones para que seleccione el caso que desea ejecutar. Para cada caso, se establecen los valores de N y M, se llaman a los métodos remotos correspondientes y se muestra el resultado por pantalla. Además, se incluye la opción de salir del programa en cualquier momento.
+
