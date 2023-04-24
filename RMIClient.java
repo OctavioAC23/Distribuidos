@@ -1,81 +1,107 @@
 import java.rmi.Naming;
-import java.rmi.RemoteException;
 import java.util.Scanner;
 
 public class RMIClient {
-    private static final String HOST = "localhost";
-    private static final int PORT = 1099;
-    private static final String SERVICE_NAME = "MatrixMultiplicationService";
+    private static final String[] SERVERS = {"localhost", "localhost", "localhost"};
+    private static final int []PORT = {1099,1234,5678};
+    private static final String SERVICE_NAME = "MatrixMultiplier";
 
     public static void main(String[] args) {
+        
+        Scanner scanner = new Scanner(System.in);
+
         try {
-            Interface server = (Interface) Naming.lookup(String.format("rmi://%s:%d/%s", HOST, PORT, SERVICE_NAME));
-            
-            int option = 0;
-            Scanner scanner = new Scanner(System.in);
-            
-            do {
-                System.out.println("Choose an option:");
-                System.out.println("1. Case 1 (N=9, M=4)");
-                System.out.println("2. Case 2 (N=900, M=400)");
-                System.out.println("0. Exit");
-                System.out.print("> ");
+            Interface[] multipliers = new Interface[SERVERS.length];
+            for (int i = 0; i < SERVERS.length; i++) {
+                multipliers[i] = (Interface) Naming.lookup(String.format("rmi://%s:%d/%s", SERVERS[i], PORT[i], SERVICE_NAME));
+            }
+            multipliers[0].borrarMatrices();
+            multipliers[1].borrarMatrices();
+            multipliers[2].borrarMatrices();
+            System.out.println("Ingrese la opcion 1 o 2");
+            int opcion = scanner.nextInt();
+
+            if (opcion == 1) {
+                try {
                 
-                option = scanner.nextInt();
+                    int N = 9;
+                    int M = 4;
                 
-                switch (option) {
-                    case 1:
-                        int N = 9;
-                        int M = 4;
-                        float[][] A = server.getMatrixA(N, M);
-                        float[][] B = server.getMatrixB(M, N);
-                        float[][] C = server.multiplyMatrix(A, B);
-                        System.out.println("Matrix C:");
-                        printMatrix(C);
-                        System.out.println("Checksum of C: " + calculateChecksum(C));
+                    float[][] A = new float[N][M];
+                    float[][] B = new float[M][N];
+                
+                    for (int i = 0; i < N; i++) {
+                        for (int j = 0; j < M; j++) {
+                            A[i][j] = 2 * i + 3 * j;
+                            B[j][i] = 3 * i - 2 * j;
+                        }
+                    }
+                
+                    int numParts = 9;
+                    int partSize = N / numParts;
+
+                    for (int k = 0; k < numParts; k++) {
+                        float[][] A_part = new float[partSize][M];
+                        float[][] B_part = new float[M][partSize];
+                        int startRow = k * partSize;
+                        for (int i = startRow; i < startRow + partSize; i++) {
+                            for (int j = 0; j < M; j++) {
+                                A_part[i - startRow][j] = A[i][j];
+                                B_part[j][i - startRow] = B[j][i];
+                            }
+                        }
+                    
+                        if (k < 3) {
+                            multipliers[0].sendMatrixA(A_part); // enviar al nodo 0
+                            multipliers[0].sendMatrixB(B_part);
+                        } else if (k < 6) {
+                            multipliers[1].sendMatrixA(A_part); // enviar al nodo 1
+                            multipliers[1].sendMatrixB(B_part);
+                        } else {
+                            multipliers[2].sendMatrixA(A_part); // enviar al nodo 2
+                            multipliers[2].sendMatrixB(B_part);
+                        }
+                    }
+                    
+                    int m = A.length;
+                    int n = B[0].length;
+                    int o = B.length;
+            
+                    float[][] result = new float[m][n];
+            
+                    for (int i = 0; i < m; i++) {
+                        for (int j = 0; j < n; j++) {
+                            for (int k = 0; k < o; k++) {
+                                result[i][j] += A[i][k] * B[k][j];
+                            }
+                        }
+                    }
+                    
+                    // Mostrar matriz C
+                    System.out.println("Matriz C resultante:");
+                    for (int i = 0; i < N; i++) {
+                        for (int j = 0; j < N; j++) {
+                            System.out.print(result[i][j] + " ");
+                        }
                         System.out.println();
-                        break;
-                    case 2:
-                        N = 900;
-                        M = 400;
-                        A = server.getMatrixA(N, M);
-                        B = server.getMatrixB(M, N);
-                        C = server.multiplyMatrix(A, B);
-                        System.out.println("Checksum of C: " + calculateChecksum(C));
-                        break;
-                    case 0:
-                        break;
-                    default:
-                        System.out.println("Invalid option");
-                        break;
+                    }
+
+                } catch (Exception e) {
+                    System.err.println("Error: " + e.getMessage());
                 }
                 
-            } while (option != 0);
-            
+            }else if (opcion == 2) {
+                
+                System.out.println("PROXIMAMENTE.");
+            } else {
+                System.out.println("Opcion invalida.");
+            }
+    
         } catch (Exception e) {
-            System.err.println("Client exception: " + e.getMessage());
+            System.err.println("Error: " + e.getMessage());
             e.printStackTrace();
         }
     }
     
-    private static double calculateChecksum(float[][] matrix) {
-        double checksum = 0;
-        for (int i = 0; i < matrix.length; i++) {
-            for (int j = 0; j < matrix[0].length; j++) {
-                checksum += matrix[i][j];
-            }
-        }
-        return checksum;
-    }
-    
-    private static void printMatrix(float[][] matrix) {
-        for (int i = 0; i < matrix.length; i++) {
-            for (int j = 0; j < matrix[0].length; j++) {
-                System.out.print(matrix[i][j] + " ");
-            }
-            System.out.println();
-        }
-    }
+
 }
-
-

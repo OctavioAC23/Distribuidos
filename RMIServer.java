@@ -1,45 +1,58 @@
 import java.rmi.Naming;
-import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
-import java.rmi.server.UnicastRemoteObject;
+import java.util.Scanner;
 
-public class RMIServer extends UnicastRemoteObject implements Interface {
-    private static final long serialVersionUID = 1L;
-    private static final String HOST = "localhost";
-    private static final int PORT = 1099;
-    private static final String SERVICE_NAME = "MatrixMultiplicationService";
-    
-    protected RMIServer() throws RemoteException {
-        super();
-    }
-    
+public class RMIServer {
     public static void main(String[] args) {
-        try {
-            Registry registry = LocateRegistry.createRegistry(PORT);
-            RMIServer server = new RMIServer();
-            String url = String.format("rmi://%s:%d/%s", HOST, PORT, SERVICE_NAME);
-            Naming.rebind(url, server);
-            System.out.println("Server ready.");
-        } catch (Exception e) {
-            System.err.println("Server exception: " + e.getMessage());
-            e.printStackTrace();
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Elige un nodo (0-2):");
+        int node = scanner.nextInt();
+        switch(node){
+            case 0:
+                System.out.println("Nodo 0");
+                try {
+                    int port = 1099; // Puerto por defecto
+                    String ipAddress = "localhost";
+                    LocateRegistry.createRegistry(port);
+                    PClass multiplier = new PClass(node);
+                    Naming.rebind("rmi://" + ipAddress + ":" + port + "/MatrixMultiplier", multiplier);
+                    System.out.println("Servidor RMI listo en " + ipAddress + ":" + port);
+                } catch (Exception e) {
+                    System.err.println("Error: " + e.getMessage());
+                }
+                break;
+
+            case 1:
+                System.out.println("Nodo 1");
+                try {
+                    int port = 1234; // Puerto 1234
+                    String ipAddress = "localhost";
+                    LocateRegistry.createRegistry(port);
+                    PClass multiplier = new PClass(node);
+                    Naming.rebind("rmi://" + ipAddress + ":" + port + "/MatrixMultiplier", multiplier);
+                    System.out.println("Servidor RMI listo en " + ipAddress + ":" + port);
+                } catch (Exception e) {
+                    System.err.println("Error: " + e.getMessage());
+                }
+                break;
+
+            case 2:
+                System.out.println("Nodo 2");
+                try {
+                    int port = 5678; // Puerto 5678
+                    String ipAddress = "localhost";
+                    LocateRegistry.createRegistry(port);
+                    PClass multiplier = new PClass(node);
+                    Naming.rebind("rmi://" + ipAddress + ":" + port + "/MatrixMultiplier", multiplier);
+                    System.out.println("Servidor RMI listo en " + ipAddress + ":" + port);
+                } catch (Exception e) {
+                    System.err.println("Error: " + e.getMessage());
+                }
+                break;
+
+            default:
+                System.out.println("Nodo inválido");
         }
     }
-
-    @Override
-    public float[][] multiplyMatrix(float[][] A, float[][] B) throws RemoteException {
-        return new PClass().multiplyMatrix(A, B);
-    }
-
-    @Override
-    public float[][] getMatrixA(int N, int M) throws RemoteException {
-        return new PClass().getMatrixA(N, M);
-    }
-
-    @Override
-    public float[][] getMatrixB(int M, int N) throws RemoteException {
-        return new PClass().getMatrixB(M, N);
-    }
 }
-
