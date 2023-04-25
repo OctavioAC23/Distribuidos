@@ -51,18 +51,13 @@ public class RMIClient {
                             }
                         }
 
-
-
-                        if (k < 3) {
-                            multipliers[0].sendMatrixA(A_part); // enviar al nodo 0
-                            multipliers[0].sendMatrixB(B_part);
-                        } else if (k < 6) {
-                            multipliers[1].sendMatrixA(A_part); // enviar al nodo 1
-                            multipliers[1].sendMatrixB(B_part);
-                        } else {
-                            multipliers[2].sendMatrixA(A_part); // enviar al nodo 2
-                            multipliers[2].sendMatrixB(B_part);
-                        }
+                            multipliers[0].sendMatrixA(A_part,k); // enviar al nodo 0
+                            multipliers[0].sendMatrixB(B_part,k);
+                            multipliers[1].sendMatrixA(A_part,k); // enviar al nodo 1
+                            multipliers[1].sendMatrixB(B_part,k);
+                            multipliers[2].sendMatrixA(A_part,k); // enviar al nodo 2
+                            multipliers[2].sendMatrixB(B_part,k);
+                        
                     }
 
 
