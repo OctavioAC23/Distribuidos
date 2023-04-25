@@ -50,7 +50,9 @@ public class RMIClient {
                                 B_part[j][i - startRow] = B[j][i];
                             }
                         }
-                    
+
+
+
                         if (k < 3) {
                             multipliers[0].sendMatrixA(A_part); // enviar al nodo 0
                             multipliers[0].sendMatrixB(B_part);
@@ -62,7 +64,8 @@ public class RMIClient {
                             multipliers[2].sendMatrixB(B_part);
                         }
                     }
-                    
+
+
                     int m = A.length;
                     int n = B[0].length;
                     int o = B.length;

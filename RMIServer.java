@@ -17,11 +17,12 @@ public class RMIServer {
                     LocateRegistry.createRegistry(port);
                     PClass multiplier = new PClass(node);
                     Naming.rebind("rmi://" + ipAddress + ":" + port + "/MatrixMultiplier", multiplier);
-                    System.out.println("Servidor RMI listo en " + ipAddress + ":" + port);
+                    System.out.println("Servidor RMI listo en " + ipAddress + ":" + port);                    
                 } catch (Exception e) {
                     System.err.println("Error: " + e.getMessage());
                 }
                 break;
+
 
             case 1:
                 System.out.println("Nodo 1");
