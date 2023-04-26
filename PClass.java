@@ -35,8 +35,6 @@ public class PClass extends UnicastRemoteObject implements Interface {
     }
     
 
-    private int countPartsReceived = 0;
-
 public void sendMatrixA(float[][] A, int partNumber) throws RemoteException {
     switch(partNumber) {
         case 0:
@@ -67,8 +65,6 @@ public void sendMatrixA(float[][] A, int partNumber) throws RemoteException {
             A9 = A;
             break;
     }
-    countPartsReceived++;
-    System.out.println("Part " + partNumber + " of matrix A received.");
 }
 
 
@@ -102,14 +98,6 @@ public void sendMatrixB(float[][] B, int partNumber) throws RemoteException {
             B9 = B;
             break;
     }
-    countPartsReceived++;
-    System.out.println("Part " + partNumber + " of matrix B received.");
-    if (A9 != null) {
-        if(node==0){
-        System.out.println("entra aqui?");
-        multiplicarMatrices0();          
-        }
-    }
 }
 
 
@@ -123,63 +111,90 @@ public void sendMatrixB(float[][] B, int partNumber) throws RemoteException {
             System.out.println();
         }
     }
+
+    public float[][][] getMatricesC1() throws RemoteException {
+        return multiplicarMatrices0();
+    }
     
+    public float[][][] getMatricesC2() throws RemoteException {
+        return multiplicarMatrices1();
+    }
+
+    public float[][][] getMatricesC3() throws RemoteException {
+        return multiplicarMatrices2();
+    }
+
     public float[][][] multiplicarMatrices0() throws RemoteException {
         int rowsA = A1.length;
         int colsA = A1[0].length;
         int colsB = B1[0].length;
         
-        float[][][] A = new float[][][] {A1, A2, A3, A4, A5, A6, A7, A8, A9};
+        float[][][] A = new float[][][] {A1, A2, A3};
         float[][][] B = new float[][][] {B1, B2, B3, B4, B5, B6, B7, B8, B9};
-        float[][][] matricesC = new float[9][rowsA][colsB];
-    
-        for (int c = 0; c < matricesC.length; c++) {
-            float[][] currentB = B[c];
+        float[][][] matricesC1 = new float[27][rowsA][colsB];
+
+        for (int c = 0; c < 27; c++) { // solo itera 27 veces
+            float[][] currentB = B[c % 9]; // utiliza la matriz de B correspondiente
+            float[][] currentA = A[c/9]; // utiliza la matriz A correspondiente
             for (int i = 0; i < rowsA; i++) {
                 for (int j = 0; j < colsB; j++) {
                     for (int k = 0; k < colsA; k++) {
-                        matricesC[c][i][j] += A1[i][k] * currentB[k][j];
+                        matricesC1[c][i][j] += currentA[i][k] * currentB[k][j]; // utiliza la matriz A y B correspondientes
                     }
                 }
             }
-            mostrarMatriz(matricesC[c]);
         }
-    
-        return matricesC;
-    }
-    
-    
+        return matricesC1;
 
-    public float[][] multiplicarMatrices1() throws RemoteException {
+
+    }
+
+    public float[][][] multiplicarMatrices1() throws RemoteException {
         int rowsA = A4.length;
         int colsA = A4[0].length;
         int colsB = B4[0].length;
-        float[][] C28 = new float[rowsA][colsB];
-        for (int i = 0; i < rowsA; i++) {
-            for (int j = 0; j < colsB; j++) {
-                for (int k = 0; k < colsA; k++) {
-                    C28[i][j] += A4[i][k] * B4[k][j];
+        float[][][] A = new float[][][] {A4, A5, A6};
+        float[][][] B = new float[][][] {B1, B2, B3, B4, B5, B6, B7, B8, B9};
+        float[][][] matricesC2 = new float[27][rowsA][colsB];
+
+        for (int c = 0; c < 27; c++) { // solo itera 27 veces
+            float[][] currentB = B[c % 9]; // utiliza la matriz de B correspondiente
+            float[][] currentA = A[c/9]; // utiliza la matriz A correspondiente
+            for (int i = 0; i < rowsA; i++) {
+                for (int j = 0; j < colsB; j++) {
+                    for (int k = 0; k < colsA; k++) {
+                        matricesC2[c][i][j] += currentA[i][k] * currentB[k][j]; // utiliza la matriz A y B correspondientes
+                    }
                 }
             }
         }
-        mostrarMatriz(C28);
-        return C28;
+
+        return matricesC2;
+
     }
 
-    public float[][] multiplicarMatrices2() throws RemoteException {
-        int rowsA = A9.length;
-        int colsA = A9[0].length;
-        int colsB = B9[0].length;
-        float[][] C81 = new float[rowsA][colsB];
-        for (int i = 0; i < rowsA; i++) {
-            for (int j = 0; j < colsB; j++) {
-                for (int k = 0; k < colsA; k++) {
-                    C81[i][j] += A9[i][k] * B9[k][j];
+    public float[][][] multiplicarMatrices2() throws RemoteException {
+        int rowsA = A7.length;
+        int colsA = A7[0].length;
+        int colsB = B7[0].length;
+        float[][][] A = new float[][][] {A7, A8, A9};
+        float[][][] B = new float[][][] {B1, B2, B3, B4, B5, B6, B7, B8, B9};
+        float[][][] matricesC3 = new float[27][rowsA][colsB];
+
+        for (int c = 0; c < 27; c++) { // solo itera 27 veces
+            float[][] currentB = B[c % 9]; // utiliza la matriz de B correspondiente
+            float[][] currentA = A[c/9]; // utiliza la matriz A correspondiente
+            for (int i = 0; i < rowsA; i++) {
+                for (int j = 0; j < colsB; j++) {
+                    for (int k = 0; k < colsA; k++) {
+                        matricesC3[c][i][j] += currentA[i][k] * currentB[k][j]; // utiliza la matriz A y B correspondientes
+                    }
                 }
             }
         }
-        mostrarMatriz(C81);
-        return C81;
+
+        return matricesC3;
+
     }
     
 }

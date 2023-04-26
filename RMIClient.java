@@ -60,6 +60,45 @@ public class RMIClient {
                         
                     }
 
+                    float[][][] matricesC1 = multipliers[0].getMatricesC1();
+                    float[][][] matricesC2 = multipliers[1].getMatricesC2();
+                    float[][][] matricesC3 = multipliers[2].getMatricesC3();
+
+                    System.out.println("Armado de la matriz C");
+                    int rowsA = matricesC1[0].length;
+                    int colsB = matricesC1[0][0].length;
+
+                    float[][][] C = new float[27][rowsA][3 * colsB];
+
+                    for (int c = 0; c < 27; c++) {
+                        // Copiar matricesC1 en la columna 0 de C
+                        for (int i = 0; i < colsB; i++) {
+                            for (int j = 0; j < rowsA; j++) {
+                                C[c][i][j] = matricesC1[c][i][j];
+                            }
+                        }
+
+                        // Copiar matricesC2 en la columna 1 de C
+                        for (int i = 0; i < colsB; i++) {
+                            for (int j = 0; j < rowsA; j++) {
+                                C[c][i][colsB + j] = matricesC2[c][i][j];
+                            }
+                        }
+
+                        // Copiar matricesC3 en la columna 2 de C
+                        for (int i = 0; i < colsB; i++) {
+                            for (int j = 0; j < rowsA; j++) {
+                                C[c][i][2 * colsB + j] = matricesC3[c][i][j];
+                            }
+                        }
+                    }
+
+                    // Mostrar la matriz C
+                    System.out.println("Matriz C:");
+                    for (int c = 0; c < 27; c++) {
+                        mostrarMatriz(C[c]);
+                    }
+
 
                     int m = A.length;
                     int n = B[0].length;
@@ -100,6 +139,16 @@ public class RMIClient {
             e.printStackTrace();
         }
     }
+    public static void mostrarMatriz(float[][] matriz) {
+        for (int i = 0; i < matriz.length; i++) {
+            for (int j = 0; j < matriz[0].length; j++) {
+                System.out.print(matriz[i][j]);
+            }
+            System.out.println();
+        }
+        System.out.println();
+    }
+    
     
 
 }
