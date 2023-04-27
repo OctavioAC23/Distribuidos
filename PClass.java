@@ -31,7 +31,6 @@ public class PClass extends UnicastRemoteObject implements Interface {
         B7 = null;
         B8 = null;
         B9 = null;
-        System.out.println("Matrices borradas");
     }
     
 
@@ -99,18 +98,6 @@ public void sendMatrixB(float[][] B, int partNumber) throws RemoteException {
             break;
     }
 }
-
-
-    private void mostrarMatriz(float[][] matriz) {
-        int rows = matriz.length;
-        int cols = matriz[0].length;
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                System.out.print(matriz[i][j] + "\t");
-            }
-            System.out.println();
-        }
-    }
 
     public float[][][] getMatricesC1() throws RemoteException {
         return multiplicarMatrices0();
