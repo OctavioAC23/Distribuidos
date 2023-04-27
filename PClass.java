@@ -5,11 +5,9 @@ public class PClass extends UnicastRemoteObject implements Interface {
     private static final long serialVersionUID = 1L;
     private float[][] A1, A2, A3, A4, A5, A6, A7, A8, A9;
     private float[][] B1, B2, B3, B4, B5, B6, B7, B8, B9;
-    private int node;
 
     public PClass(int node) throws RemoteException {
         super();
-        this.node = node;
     }
 
     public void borrarMatrices() throws RemoteException {
@@ -183,6 +181,6 @@ public void sendMatrixB(float[][] B, int partNumber) throws RemoteException {
         return matricesC3;
 
     }
-    
+       
 }
 

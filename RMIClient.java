@@ -1,4 +1,5 @@
 import java.rmi.Naming;
+import java.rmi.RemoteException;
 import java.util.Scanner;
 
 public class RMIClient {
@@ -11,18 +12,26 @@ public class RMIClient {
         Scanner scanner = new Scanner(System.in);
 
         try {
-            Interface[] multipliers = new Interface[SERVERS.length];
-            for (int i = 0; i < SERVERS.length; i++) {
-                multipliers[i] = (Interface) Naming.lookup(String.format("rmi://%s:%d/%s", SERVERS[i], PORT[i], SERVICE_NAME));
-            }
-            multipliers[0].borrarMatrices();
-            multipliers[1].borrarMatrices();
-            multipliers[2].borrarMatrices();
             System.out.println("Ingrese la opcion 1 o 2");
             int opcion = scanner.nextInt();
-
+            //Thread[] threads =new Thread[multipliers.length];
             if (opcion == 1) {
+                Interface[] multipliers = new Interface[SERVERS.length];
+                Thread[] threads = new Thread[SERVERS.length];
+                MatrixThread[] threads2 = new MatrixThread[SERVERS.length];
+                    for (int i = 0; i < SERVERS.length; i++) {
+                        multipliers[i] = (Interface) Naming.lookup(String.format("rmi://%s:%d/%s", SERVERS[i], PORT[i], SERVICE_NAME));
+                    }
+                    for (int i = 0; i < SERVERS.length; i++) {
+                        threads[i] = new VaciarMatrices(multipliers[i]);
+                        threads[i].start();
+                    }
+            
+                    for (int i = 0; i < SERVERS.length; i++) {
+                        threads[i].join();
+                    }
                 try {
+                    
                 
                     int N = 9;
                     int M = 4;
@@ -51,18 +60,31 @@ public class RMIClient {
                             }
                         }
 
-                            multipliers[0].sendMatrixA(A_part,k); // enviar al nodo 0
-                            multipliers[0].sendMatrixB(B_part,k);
-                            multipliers[1].sendMatrixA(A_part,k); // enviar al nodo 1
-                            multipliers[1].sendMatrixB(B_part,k);
-                            multipliers[2].sendMatrixA(A_part,k); // enviar al nodo 2
-                            multipliers[2].sendMatrixB(B_part,k);
+                        for (int i = 0; i < SERVERS.length; i++) {
+                            threads[i] = new SendThread(A_part, B_part, multipliers[i], k);
+                            threads[i].start();
+                        }
+                
+                        for (int i = 0; i < SERVERS.length; i++) {
+                            threads[i].join();
+                        }
                         
                     }
 
-                    float[][][] matricesC1 = multipliers[0].getMatricesC1();
-                    float[][][] matricesC2 = multipliers[1].getMatricesC2();
-                    float[][][] matricesC3 = multipliers[2].getMatricesC3();
+                    // Create the threads
+                    for (int i = 0; i < SERVERS.length; i++) {
+                        threads2[i] = new  MatrixThread(multipliers[i], i);
+                        threads2[i].start();
+                    }
+            
+                    for (int i = 0; i < SERVERS.length; i++) {
+                        threads2[i].join();
+                    }
+                    // Get the matrices calculated by the threads
+                    float[][][] matricesC1 = threads2[0].getMatrices();
+                    float[][][] matricesC2 = threads2[1].getMatrices();
+                    float[][][] matricesC3 = threads2[2].getMatrices();
+
 
                     float [][] C = new float[N][N];
                    // Mostrar la matriz C
@@ -89,7 +111,7 @@ public class RMIClient {
                 checksum %= 1000000007.0;
                 System.out.println("Checksum: " + checksum);
 
-
+                
 
 
                 } catch (Exception e) {
@@ -97,11 +119,24 @@ public class RMIClient {
                 }
                 
             }else if (opcion == 2) {
-                
+                    Interface[] multipliers = new Interface[SERVERS.length];
+                    Thread[] threads = new Thread[SERVERS.length];
+                    MatrixThread[] threads2 = new MatrixThread[SERVERS.length];
+                    for (int i = 0; i < SERVERS.length; i++) {
+                        multipliers[i] = (Interface) Naming.lookup(String.format("rmi://%s:%d/%s", SERVERS[i], PORT[i], SERVICE_NAME));
+                    }
+                    for (int i = 0; i < SERVERS.length; i++) {
+                        threads[i] = new VaciarMatrices(multipliers[i]);
+                        threads[i].start();
+                    }
+            
+                    for (int i = 0; i < SERVERS.length; i++) {
+                        threads[i].join();
+                    }
                 try {
                 
-                    int N = 9;
-                    int M = 4;
+                    int N = 900;
+                    int M = 400;
                 
                     float[][] A = new float[N][M];
                     float[][] B = new float[M][N];
@@ -126,47 +161,36 @@ public class RMIClient {
                                 B_part[j][i - startRow] = B[j][i];
                             }
                         }
-
-                            multipliers[0].sendMatrixA(A_part,k); // enviar al nodo 0
-                            multipliers[0].sendMatrixB(B_part,k);
-                            multipliers[1].sendMatrixA(A_part,k); // enviar al nodo 1
-                            multipliers[1].sendMatrixB(B_part,k);
-                            multipliers[2].sendMatrixA(A_part,k); // enviar al nodo 2
-                            multipliers[2].sendMatrixB(B_part,k);
+                        for (int i = 0; i < SERVERS.length; i++) {
+                            threads[i] = new SendThread(A_part, B_part, multipliers[i], k);
+                            threads[i].start();
+                        }
+                
+                        for (int i = 0; i < SERVERS.length; i++) {
+                            threads[i].join();
+                        }
                         
                     }
-
-                    float[][][] matricesC1 = multipliers[0].getMatricesC1();
-                    float[][][] matricesC2 = multipliers[1].getMatricesC2();
-                    float[][][] matricesC3 = multipliers[2].getMatricesC3();
-
-                    float [][] C = new float[N][N];
-                   // Mostrar la matriz C
-                    System.out.println("Matriz C:"); 
-                    int g=0;
-                    for(int i=0;i<N;i++){
-                        for(int j=0;j<N;j++){
-                            if(g<27){
-                            C[i][j] =   matricesC1[g][0][0];
-                            C[i+3][j]   =   matricesC2[g][0][0];
-                            C[i+6][j]  =   matricesC3[g][0][0];
-                            g++;
-                        }
-                    }
-                }
-                    mostrarMatriz(C);
                     
-                    double checksum = 0.0;
-                for (int i = 0; i < N; i++) {
-                for (int j = 0; j < N; j++) {
-                    checksum += (double) C[i][j];
-                }
-                }
-                checksum %= 1000000007.0;
-                System.out.println("Checksum: " + checksum);
+                    // Create the threads
+                    for (int i = 0; i < SERVERS.length; i++) {
+                        threads2[i] = new  MatrixThread(multipliers[i], i);
+                        threads2[i].start();
+                    }
+            
+                    for (int i = 0; i < SERVERS.length; i++) {
+                        threads2[i].join();
+                    }
+                    // Get the matrices calculated by the threads
+                    float[][][] matricesC1 = threads2[0].getMatrices();
+                    float[][][] matricesC2 = threads2[1].getMatrices();
+                    float[][][] matricesC3 = threads2[2].getMatrices();
+
+                    // Perform the checksum
+                    checksum(matricesC1, matricesC2, matricesC3);
 
 
-
+                    
 
                 } catch (Exception e) {
                     System.err.println("Error: " + e.getMessage());
@@ -180,7 +204,7 @@ public class RMIClient {
             e.printStackTrace();
         }
     }
-    public static void mostrarMatriz(float[][] matriz) {
+public static void mostrarMatriz(float[][] matriz) {
         for (int i = 0; i < matriz.length; i++) {
             for (int j = 0; j < matriz[0].length; j++) {
                 System.out.print(matriz[i][j]+ " ");
@@ -189,7 +213,113 @@ public class RMIClient {
         }
         System.out.println();
     }
-    
-    
 
+public static void checksum(float[][][]matriz1,float[][][]matriz2,float[][][]matriz3){
+        double checksumTotal = 0.0;
+
+        for (float[][] matriz : matriz1) {
+            for (float[] fila : matriz) {
+                for (float valor : fila) {
+                    checksumTotal += valor;
+                }
+            }
+        }
+
+        for (float[][] matriz : matriz2) {
+            for (float[] fila : matriz) {
+                for (float valor : fila) {
+                    checksumTotal += valor;
+                }
+            }
+        }
+
+        for (float[][] matriz : matriz3) {
+            for (float[] fila : matriz) {
+                for (float valor : fila) {
+                    checksumTotal += valor;
+                }
+            }
+        }
+
+        checksumTotal = checksumTotal % (Math.pow(2, 32) - 1);
+
+        System.out.println("Checksum total: " + checksumTotal);
+    }
+}
+
+class SendThread extends Thread {
+    private float[][] A_part;
+    private float[][] B_part;
+    private Interface multiplier;
+    private int k;
+
+    public SendThread(float[][] A_part, float[][] B_part, Interface multiplier, int k) {
+        this.A_part = A_part;
+        this.B_part = B_part;
+        this.multiplier = multiplier;
+        this.k = k;
+    }
+
+    public void run() {
+            try {
+                multiplier.sendMatrixA(A_part, k);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        
+            try {
+                multiplier.sendMatrixB(B_part, k);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+            
+    }
+}
+
+class MatrixThread extends Thread {
+    private Interface multiplier;
+    private int matrixNumber;
+    private float[][][] matrices;
+
+    public MatrixThread(Interface multiplier, int matrixNumber) {
+        this.multiplier = multiplier;
+        this.matrixNumber = matrixNumber;
+    }
+
+    public float[][][] getMatrices() {
+        return matrices;
+    }
+
+    public void run() {
+        try {
+            if(matrixNumber == 0) {
+                matrices = multiplier.getMatricesC1();
+            } else if(matrixNumber == 1) {
+                matrices = multiplier.getMatricesC2();
+            } else if(matrixNumber == 2) {
+                matrices = multiplier.getMatricesC3();
+            }
+        } catch(RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+class VaciarMatrices extends Thread {
+    private Interface multiplier;
+
+    public VaciarMatrices(Interface multiplier) {
+
+        this.multiplier = multiplier;
+ 
+    }
+
+    public void run() {
+            try {
+                multiplier.borrarMatrices();
+            } catch (RemoteException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+    }
 }

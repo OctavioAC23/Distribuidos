@@ -7,6 +7,6 @@ public interface Interface extends Remote {
     void borrarMatrices() throws RemoteException;
     float[][][] getMatricesC1() throws RemoteException;
     float[][][] getMatricesC2() throws RemoteException;
-    float[][][] getMatricesC3() throws RemoteException;
+    float[][][] getMatricesC3() throws RemoteException;   
 }
 
